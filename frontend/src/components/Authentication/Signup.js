@@ -7,7 +7,10 @@ import {
   InputGroup,
   InputRightElement,
   Button,
+  useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [name, setName] = useState();
@@ -16,11 +19,125 @@ const Signup = () => {
   const [cnfpass, setCnfpass] = useState();
   const [pic, setPic] = useState();
 
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
 
-  const postDetails = (pics) => {};
-  const submitHandler = () => {};
+  const postDetails = (pics) => {
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "pics_saved");
+      data.append("cloud_name", "shri21git");
+      axios
+        .post("https://api.cloudinary.com/v1_1/shri21git/image/upload", data)
+        .then((res) => {
+          // console.log("Cloudinary response:", res);
+          setPic(res.data.url.toString());
+          setLoading(false);
+
+          toast({
+            title: "Image uploaded successfully!",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please Select a JPEG or PNG Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+  };
+
+  const submitHandler = async () => {
+    setLoading(true);
+
+    if (!name || !email || !password || !cnfpass) {
+      toast({
+        title: "Please Fill all fields!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    if (password !== cnfpass) {
+      toast({
+        title: "Passwords don't match!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const config = {
+        header: {
+          "Content-type": "application/json",
+        },
+      };
+
+      const { data } = await axios.post(
+        "api/user",
+        { name, email, password, pic },
+        config
+      );
+
+      toast({
+        title: "Sign-up successful!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
+
+      setLoading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <VStack spacing={3}>
@@ -82,7 +199,13 @@ const Signup = () => {
         />
       </FormControl>
 
-      <Button colorScheme="blue" w="100%" mt="15" onClick={submitHandler}>
+      <Button
+        colorScheme="blue"
+        w="100%"
+        mt="15"
+        onClick={submitHandler}
+        isLoading={loading}
+      >
         Sign up
       </Button>
     </VStack>
