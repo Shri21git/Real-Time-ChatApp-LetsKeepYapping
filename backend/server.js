@@ -3,6 +3,7 @@ import chats from "./data/data.js"; // to check if chat data works
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
 const app = express();
@@ -15,7 +16,9 @@ app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
+// backend connection
 app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
