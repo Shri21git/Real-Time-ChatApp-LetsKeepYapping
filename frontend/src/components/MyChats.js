@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ChatState } from "./Content/chatProvider";
+import { ChatState } from "./Context/chatProvider.js";
 import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { AddIcon } from "@chakra-ui/icons";
