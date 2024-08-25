@@ -11,7 +11,6 @@ import {
   useToast,
   FormControl,
   Input,
-  Toast,
 } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/layout";
 import React, { useState } from "react";
@@ -35,7 +34,7 @@ const GroupChatModal = ({ children }) => {
 
   const handleSearch = async (query) => {
     setSearch(query);
-    // console.log(query, search, query === search); # setSearch is updating very slow idk why, so basically setSearch is useless
+    // console.log(query, search, query === search); // setSearch is updating very slow idk why, so basically setSearch is useless
     if (!query) return;
 
     try {
@@ -80,7 +79,7 @@ const GroupChatModal = ({ children }) => {
   };
 
   const handleDelete = (user) => {
-    setSelectedUsers(selectedUsers.filter((sel) => sel._id != user._id));
+    setSelectedUsers(selectedUsers.filter((sel) => sel._id !== user._id));
   };
 
   const handleSubmit = async () => {

@@ -3,6 +3,7 @@ import SideDrawer from "../components/Misc/SideDrawer.js";
 import MyChats from "../components/MyChats.js";
 import ChatBox from "../components/ChatBox.js";
 import { ChatState } from "../components/Context/chatProvider.js";
+import { useState } from "react";
 
 // const Chats = () => {
 //   const [chats, setChats] = useState([]);
@@ -19,6 +20,7 @@ import { ChatState } from "../components/Context/chatProvider.js";
 
 const Chat = () => {
   const { user } = ChatState();
+  const [fetchChats, setFetchChats] = useState(false);
 
   return (
     <div style={{ width: "100%" }}>
@@ -30,8 +32,12 @@ const Chat = () => {
         h="90vh"
         p="10px"
       >
-        {user && <MyChats />}
-        {user && <ChatBox />}
+        {user && (
+          <MyChats fetchChats={fetchChats} />
+        )}
+        {user && (
+          <ChatBox fetchChats={fetchChats} setFetchChats={setFetchChats} />
+        )}
       </Box>
     </div>
   );

@@ -8,7 +8,7 @@ import { getSender } from "./config/chatLogic.js";
 import { Box } from "@chakra-ui/layout";
 import GroupChatModal from "./Misc/GroupChatModal.js";
 
-const MyChats = () => {
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
@@ -40,7 +40,7 @@ const MyChats = () => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChat();
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <Box
